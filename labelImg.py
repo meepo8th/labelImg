@@ -896,7 +896,10 @@ class MainWindow(QMainWindow, WindowMixin):
             # Default : select last item if there is at least one item
             if self.labelList.count():
                 self.labelList.setCurrentItem(self.labelList.item(self.labelList.count() - 1))
-                self.labelList.setItemSelected(self.labelList.item(self.labelList.count() - 1), True)
+                try:
+                    self.labelList.setItemSelected(self.labelList.item(self.labelList.count() - 1), True)
+                except Exception as err:
+                    print(err)
 
             self.canvas.setFocus(True)
             return True
