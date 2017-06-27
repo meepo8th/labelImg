@@ -101,6 +101,8 @@ class MainWindow(QMainWindow, WindowMixin):
         # Whether we need to save or not.
         self.dirty = False
 
+        # next auto save
+        self.autoSave = True
         # Enble auto saving if pressing next
         self.autoSaving = True
         self._noSelectionSlot = False
