@@ -9,6 +9,8 @@ import subprocess
 from functools import partial
 from collections import defaultdict
 
+import shutil
+
 try:
     from PyQt5.QtGui import *
     from PyQt5.QtCore import *
@@ -25,6 +27,7 @@ except ImportError:
     from PyQt4.QtGui import *
     from PyQt4.QtCore import *
 import resources
+
 # Add internal libs
 dir_name = os.path.abspath(os.path.dirname(__file__))
 libs_path = os.path.join(dir_name, 'libs')
@@ -42,6 +45,8 @@ from libs.pascal_voc_io import XML_EXT
 from libs.ustr import ustr
 
 __appname__ = 'labelImg'
+PIC_PROCESS_DIR = "E:/picRecord/label/processed"
+LABEL_PROCESS_DIR = "E:/picRecord/label/processed"
 
 
 # Utility functions and classes.
@@ -1113,19 +1118,19 @@ class MainWindow(QMainWindow, WindowMixin):
             self.loadFile(filename)
 
     def saveFile(self, _value=False):
+        imgFileName = os.path.basename(self.filePath)
+        imgFileDir = os.path.dirname(self.filePath)
+        savedFileName = os.path.splitext(imgFileName)[0] + XML_EXT
+        if "" != LABEL_PROCESS_DIR:
+            self.defaultSaveDir = LABEL_PROCESS_DIR
         if self.defaultSaveDir is not None and len(ustr(self.defaultSaveDir)):
             if self.filePath:
-                imgFileName = os.path.basename(self.filePath)
-                savedFileName = os.path.splitext(imgFileName)[0] + XML_EXT
                 savedPath = os.path.join(ustr(self.defaultSaveDir), savedFileName)
-                self._saveFile(savedPath)
         else:
-            imgFileDir = os.path.dirname(self.filePath)
-            imgFileName = os.path.basename(self.filePath)
-            savedFileName = os.path.splitext(imgFileName)[0] + XML_EXT
             savedPath = os.path.join(imgFileDir, savedFileName)
-            self._saveFile(savedPath if self.labelFile
-                           else self.saveFileDialog())
+        if "" != PIC_PROCESS_DIR:
+            shutil.move(self.filePath, os.path.join(PIC_PROCESS_DIR, imgFileName))
+        self._saveFile(savedPath)
 
     def saveFileAs(self, _value=False):
         assert not self.image.isNull(), "cannot save empty image"

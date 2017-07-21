@@ -3,8 +3,8 @@ import random
 
 trainval_percent = 0.66
 train_percent = 0.5
-xmlfilepath = 'E:\picRecord\data\data\VOC2012\Annotations'
-txtsavepath = 'E:\picRecord\data\data\VOC2012\ImageSets\Main'
+xmlfilepath = 'E:/picRecord/data_plus/data/VOC2012/Annotations'
+txtsavepath = 'E:\picRecord\data_plus\data\VOC2012\ImageSets\Main'
 total_xml = os.listdir(xmlfilepath)
 
 num=len(total_xml)
@@ -14,10 +14,10 @@ tr=int(tv*train_percent)
 trainval= random.sample(list,tv)
 train=random.sample(trainval,tr)
 
-ftrainval = open('E:\picRecord\data\data\VOC2012\ImageSets/Main/trainval.txt', 'w')
-ftest = open('E:\picRecord\data\data\VOC2012\ImageSets/Main/test.txt', 'w')
-ftrain = open('E:\picRecord\data\data\VOC2012\ImageSets/Main/train.txt', 'w')
-fval = open('E:\picRecord\data\data\VOC2012\ImageSets/Main/val.txt', 'w')
+ftrainval = open('E:\picRecord\data_plus\data\VOC2012\ImageSets/Main/trainval.txt', 'w')
+ftest = open('E:\picRecord\data_plus\data\VOC2012\ImageSets/Main/test.txt', 'w')
+ftrain = open('E:\picRecord\data_plus\data\VOC2012\ImageSets/Main/train.txt', 'w')
+fval = open('E:\picRecord\data_plus\data\VOC2012\ImageSets/Main/val.txt', 'w')
 
 for i  in list:
     name=total_xml[i][:-4]+'\n'
