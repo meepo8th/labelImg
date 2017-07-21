@@ -229,7 +229,7 @@ class MainWindow(QMainWindow, WindowMixin):
                         'space', 'verify', u'Verify Image')
 
         save = action('&Save', self.saveFile,
-                      'Ctrl+S', 'save', u'Save labels to file', enabled=False)
+                      'Ctrl+S', 'save', u'Save labels to file', enabled=True)
         saveAs = action('&Save As', self.saveFileAs,
                         'Ctrl+Shift+S', 'save-as', u'Save labels to a different file',
                         enabled=False)
@@ -517,7 +517,7 @@ class MainWindow(QMainWindow, WindowMixin):
 
     def setClean(self):
         self.dirty = False
-        self.actions.save.setEnabled(False)
+        self.actions.save.setEnabled(True)
         self.actions.create.setEnabled(True)
 
     def toggleActions(self, value=True):
@@ -1121,14 +1121,18 @@ class MainWindow(QMainWindow, WindowMixin):
         imgFileName = os.path.basename(self.filePath)
         imgFileDir = os.path.dirname(self.filePath)
         savedFileName = os.path.splitext(imgFileName)[0] + XML_EXT
-        if "" != LABEL_PROCESS_DIR:
-            self.defaultSaveDir = LABEL_PROCESS_DIR
         if self.defaultSaveDir is not None and len(ustr(self.defaultSaveDir)):
             if self.filePath:
-                savedPath = os.path.join(ustr(self.defaultSaveDir), savedFileName)
+                if "" != LABEL_PROCESS_DIR:
+                    savedPath = os.path.join(ustr(LABEL_PROCESS_DIR), savedFileName)
+                else:
+                    savedPath = os.path.join(ustr(self.defaultSaveDir), savedFileName)
         else:
-            savedPath = os.path.join(imgFileDir, savedFileName)
-        if "" != PIC_PROCESS_DIR:
+            if "" != LABEL_PROCESS_DIR:
+                    savedPath = os.path.join(ustr(LABEL_PROCESS_DIR), savedFileName)
+            else:
+                savedPath = os.path.join(imgFileDir, savedFileName)
+        if "" != PIC_PROCESS_DIR and os.path.exists(self.filePath):
             shutil.move(self.filePath, os.path.join(PIC_PROCESS_DIR, imgFileName))
         self._saveFile(savedPath)
 
