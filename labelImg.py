@@ -225,8 +225,8 @@ class MainWindow(QMainWindow, WindowMixin):
         openPrevImg = action('&Prev Image', self.openPrevImg,
                              'a', 'prev', u'Open Prev')
 
-        verify = action('&Verify Image', self.verifyImg,
-                        'space', 'verify', u'Verify Image')
+        batchRename = action('&batch rename', self.batchRename,
+                             'space', 'rename', u'batch rename')
 
         save = action('&Save', self.saveFile,
                       'Ctrl+S', 'save', u'Save labels to file', enabled=True)
@@ -370,7 +370,7 @@ class MainWindow(QMainWindow, WindowMixin):
 
         self.tools = self.toolbar('Tools')
         self.actions.beginner = (
-            open, opendir, openNextImg, openPrevImg, verify, save, None, create, copy, delete, None,
+            open, opendir, openNextImg, openPrevImg, batchRename, save, None, create, copy, delete, None,
             zoomIn, zoom, zoomOut, fitWindow, fitWidth)
 
         self.actions.advanced = (
@@ -1066,6 +1066,16 @@ class MainWindow(QMainWindow, WindowMixin):
             self.paintCanvas()
             self.saveFile()
 
+    def batchRename(self, item=None):
+        if not self.canvas.editing():
+            return
+        item = item if item else self.currentItem()
+        text = self.labelDialog.popUp(item.text())
+        for item in self.labelList.items():
+            if text is not None:
+                item.setText(text)
+                self.setDirty()
+
     def openPrevImg(self, _value=False):
         if not self.mayContinue():
             return
@@ -1129,7 +1139,7 @@ class MainWindow(QMainWindow, WindowMixin):
                     savedPath = os.path.join(ustr(self.defaultSaveDir), savedFileName)
         else:
             if "" != LABEL_PROCESS_DIR:
-                    savedPath = os.path.join(ustr(LABEL_PROCESS_DIR), savedFileName)
+                savedPath = os.path.join(ustr(LABEL_PROCESS_DIR), savedFileName)
             else:
                 savedPath = os.path.join(imgFileDir, savedFileName)
         if "" != PIC_PROCESS_DIR and os.path.exists(self.filePath):
