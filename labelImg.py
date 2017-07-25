@@ -5,6 +5,7 @@ import os.path
 import re
 import sys
 import subprocess
+import traceback
 
 from functools import partial
 from collections import defaultdict
@@ -92,6 +93,7 @@ class MainWindow(QMainWindow, WindowMixin):
     FIT_WINDOW, FIT_WIDTH, MANUAL_ZOOM = list(range(3))
 
     def __init__(self, defaultFilename=None, defaultPrefdefClassFile=None):
+        print(defaultPrefdefClassFile)
         super(MainWindow, self).__init__()
         self.setWindowTitle(__appname__)
         # Save as Pascal voc xml
@@ -1067,14 +1069,19 @@ class MainWindow(QMainWindow, WindowMixin):
             self.saveFile()
 
     def batchRename(self, item=None):
-        if not self.canvas.editing():
-            return
-        item = item if item else self.currentItem()
-        text = self.labelDialog.popUp(item.text())
-        for item in self.labelList.items():
-            if text is not None:
-                item.setText(text)
-                self.setDirty()
+        try:
+            if not self.canvas.editing():
+                return
+            item = item if item else self.currentItem()
+            text = self.labelDialog.popUp(item.text())
+            items = []
+            for index in range(self.labelList.count()):
+                items.append(self.labelList.item(index))
+            for labelItem in items:
+                if text is not None:
+                    labelItem.setText(text)
+        except Exception:
+            traceback.format_exc()
 
     def openPrevImg(self, _value=False):
         if not self.mayContinue():
@@ -1325,7 +1332,7 @@ def get_main_app(argv=[]):
     # Tzutalin 201705+: Accept extra agruments to change predefined class file
     # Usage : labelImg.py image predefClassFile
     win = MainWindow(argv[1] if len(argv) >= 2 else None,
-                     argv[2] if len(argv) >= 3 else os.path.join('data', 'predefined_classes.txt'))
+                     "E:/testcode/labelImg/data/predefined_classes.txt")
     win.show()
     return app, win
 
